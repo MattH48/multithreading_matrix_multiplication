@@ -14,7 +14,7 @@
 
 int C[max_rows][max_cols]; // Matrix C
 void Matrix_C(int A[max_rows][max_cols], int B[max_rows][max_cols], int M,
-              int N, int K) {
+              int N, int K, int start, int end) {
   for (int i = 0; i < M; i++) {
     for (int j = 0; j < K; j++) {
       for (int k = 0; k < N; k++) {
@@ -79,8 +79,9 @@ int main(int argc, char **argv) { // Takes cmd arguments for the matrix.
       }
     }
   }
-  std::thread threadObj1(Matrix_C, A, B, M, N, K);
-  std::thread threadObj2(Matrix_C, A, B, M, N, K);
+  int mid = M/2;
+  std::thread threadObj1(Matrix_C, A, B, M, N, K, 0, mid);
+  std::thread threadObj2(Matrix_C, A, B, M, N, K, mid, M);
   threadObj1.join();
   threadObj2.join();
   printf("*******Matrix C******\n");
