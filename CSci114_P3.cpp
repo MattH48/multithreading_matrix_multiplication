@@ -15,7 +15,7 @@
 int C[max_rows][max_cols]; // Matrix C
 void Matrix_C(int A[max_rows][max_cols], int B[max_rows][max_cols], int M,
               int N, int K, int start, int end) {
-  for (int i = 0; i < M; i++) {
+  for (int i = start; i < end; i++) {
     for (int j = 0; j < K; j++) {
       for (int k = 0; k < N; k++) {
         C[i][j] += A[i][k] * B[k][j]; // Multiplacation of matrix A and B.
