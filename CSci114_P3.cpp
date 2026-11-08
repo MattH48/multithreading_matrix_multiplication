@@ -6,29 +6,21 @@
  *
  * */
 #include <fstream>
-#include <iostream>
 #include <cstdio>
 #include <thread>
+#include <cstdlib>
 #define max_rows 100
 #define max_cols 100
 
-mutex mt;
+int C[max_rows][max_cols]; // Matrix C
 void Matrix_C(int A[max_rows][max_cols], int B[max_rows][max_cols], int M,
               int N, int K) {
-  int C[max_rows][max_cols]; // Matrix C
   for (int i = 0; i < M; i++) {
     for (int j = 0; j < K; j++) {
       for (int k = 0; k < N; k++) {
         C[i][j] += A[i][k] * B[k][j]; // Multiplacation of matrix A and B.
       }
     }
-  }
-  printf("*******Matrix C******\n");
-  for (int i = 0; i < M; i++) {
-    for (int j = 0; j < K; j++) {
-      printf("%d ", C[i][j]);
-    }
-    printf("\n");
   }
 }
 int main(int argc, char **argv) { // Takes cmd arguments for the matrix.
@@ -47,6 +39,7 @@ int main(int argc, char **argv) { // Takes cmd arguments for the matrix.
     printf("File A has been successfully opened.\n");
   } else {
     printf("File A failed to open.\n");
+    exit(1);
   }
   for (int i = 0; i < M; i++) {
     for (int j = 0; j < N; j++) {
@@ -54,7 +47,7 @@ int main(int argc, char **argv) { // Takes cmd arguments for the matrix.
     }
   }
   File_A.close();
-  cout << "******Matrix A******\n";
+  printf("******Matrix A******\n");
   for (int i = 0; i < M; i++) {
     for (int j = 0; j < N; j++) {
       printf("%d ", A[i][j]);
@@ -69,6 +62,7 @@ int main(int argc, char **argv) { // Takes cmd arguments for the matrix.
      printf("File B has been opened successfully.\n");
   } else {
     printf("File B has failed to open.\n");
+    exit(1);
   }
   for (int i = 0; i < N; i++) {
     for (int j = 0; j < K; j++) {
@@ -76,7 +70,7 @@ int main(int argc, char **argv) { // Takes cmd arguments for the matrix.
     }
   }
   File_B.close();
-  cout << "******Matrix B******\n";
+  printf("******Matrix B******\n");
   for (int i = 0; i < N; i++) {
     for (int j = 0; j < K; j++) {
       printf("%d ", B[i][j]);
@@ -89,6 +83,13 @@ int main(int argc, char **argv) { // Takes cmd arguments for the matrix.
   std::thread threadObj2(Matrix_C, A, B, M, N, K);
   threadObj1.join();
   threadObj2.join();
-  cout << "Multiplication finished.\n";
+  printf("*******Matrix C******\n");
+  for (int i = 0; i < M; i++) {
+    for (int j = 0; j < K; j++) {
+      printf("%d ", C[i][j]);
+    }
+    printf("\n");
+  }
+  printf("Multiplication finished.\n");
   return 0;
 }
