@@ -7,6 +7,7 @@
  * */
 #include <fstream>
 #include <iostream>
+#include <cstdio>
 #include <thread>
 #define max_rows 100
 #define max_cols 100
