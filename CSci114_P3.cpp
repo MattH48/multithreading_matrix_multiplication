@@ -4,23 +4,26 @@
  * 2. ./a.out M N K for MacOS or linux
  * 3. ./a.exe M N K for windows Cygwin
  * your choice of numbers in the command line argument.
- * AI disclamer: I used feedback from AI to fine tune my code finding any missing pieces. 
- * However, outside of the feedback I wrote the logic and the code.
+ * AI disclamer: I used feedback from AI to fine tune my code finding any
+ * missing pieces. However, outside of the feedback I wrote the logic and the
+ * code.
  * */
-#include <fstream> // to open the input files
-#include <cstdio> // for printf
-#include <thread> // for thread operations
+#include <cstdio>  // for printf
 #include <cstdlib> // for atoi
-// I decided to go with macros for the max rows and columns to make the code more readable
-// Along with easing the change of the maximum values.
-#define max_rows 100 
+#include <fstream> // to open the input files
+#include <thread>  // for thread operations
+// I decided to go with macros for the max rows and columns to make the code
+// more readable Along with easing the change of the maximum values.
+#define max_rows 100
 #define max_cols 100
 
 int C[max_rows][max_cols]; // Matrix C
 void Matrix_C(int A[max_rows][max_cols], int B[max_rows][max_cols], int M,
-              int N, int K, int start, int end) { // This function multiplies the matrix.
-  for (int i = start; i < end; i++) { // Start and end are for the threads to work off of.
-    for (int j = 0; j < K; j++) { // 
+              int N, int K, int start,
+              int end) { // This function multiplies the matrix.
+  for (int i = start; i < end;
+       i++) { // Start and end are for the threads to work off of.
+    for (int j = 0; j < K; j++) { //
       for (int k = 0; k < N; k++) {
         C[i][j] += A[i][k] * B[k][j]; // Multiplacation of matrix A and B.
       }
@@ -37,7 +40,8 @@ int main(int argc, char **argv) { // Takes cmd arguments for the matrix.
   M = atoi(argv[1]);
   N = atoi(argv[2]);
   K = atoi(argv[3]);
-  if(M > 100 || N > 100 || K > 100) { // checks if any cmdline arg is over max limit.
+  // checks if any cmdline arg is over max limit.
+  if (M > 100 || N > 100 || K > 100) {
     printf("One of the arguments is over 100 invalid.\n");
     exit(1);
   }
@@ -49,7 +53,8 @@ int main(int argc, char **argv) { // Takes cmd arguments for the matrix.
     printf("File A failed to open.\n");
     exit(1);
   }
-  for (int i = 0; i < M; i++) { // allocated the values from the file to the matrix
+  // allocated the values from the file to the matrix
+  for (int i = 0; i < M; i++) {
     for (int j = 0; j < N; j++) {
       File_A >> A[i][j];
     }
@@ -67,19 +72,20 @@ int main(int argc, char **argv) { // Takes cmd arguments for the matrix.
   std::ifstream File_B;
   File_B.open("B.txt");
   if (File_B.is_open()) { // The opening of the file.
-     printf("File B has been opened successfully.\n");
+    printf("File B has been opened successfully.\n");
   } else {
     printf("File B has failed to open.\n");
     exit(1);
   }
-  for (int i = 0; i < N; i++) { // allocated the values from the file to the matrix
+  // allocated the values from the file to the matrix
+  for (int i = 0; i < N; i++) {
     for (int j = 0; j < K; j++) {
       File_B >> B[i][j];
     }
   }
   File_B.close();
   printf("******Matrix B******\n");
-  for (int i = 0; i < N; i++) { // Tests matrx B
+  for (int i = 0; i < N; i++) { // Tests matrix B
     for (int j = 0; j < K; j++) {
       printf("%d ", B[i][j]);
       if (j == (K - 1)) {
@@ -87,11 +93,13 @@ int main(int argc, char **argv) { // Takes cmd arguments for the matrix.
       }
     }
   }
-  int mid = M/2; // Gave each thread a section of the rows to work on simultaneously.
-  std::thread threadObj1(Matrix_C, A, B, M, N, K, 0, mid); // First thread that works from 0 to half of rows.
-  std::thread threadObj2(Matrix_C, A, B, M, N, K, mid, M); // First thread that works from half to end of the rows.
-  threadObj1.join();
-  threadObj2.join();
+  std::thread threads[max_rows]; // Used an array to create threads
+  for (int i = 0; i < M; i++) { // Creates a thread per row
+    threads[i] = std::thread(Matrix_C, A, B, M, N, K, i, i + 1);
+  }
+  for (int i = 0; i < M; i++) { // joins each thread created
+    threads[i].join();
+  }
   printf("*******Matrix C******\n"); // Prints the result of matrix C
   for (int i = 0; i < M; i++) {
     for (int j = 0; j < K; j++) {
